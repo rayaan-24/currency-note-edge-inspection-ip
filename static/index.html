@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Currency Note Edge Quality Inspection — Digital Image Processing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M6 12h.01M18 12h.01"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="project-title">Currency Note Edge Quality Inspection</h1>
+          <p class="project-subtitle">Digital Image Processing Course Project &bull; Native Python DIP Engine</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <div id="engineStatusBadge" class="status-badge ready">
+          <span class="status-dot"></span>
+          <span id="engineStatusText">Python DIP Engine Ready</span>
+        </div>
+        <button id="btnOpenBrowserModal" class="btn-primary-header" title="Browse all 2,000 selected Indian banknote images">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Browse 2,000 Dataset Notes
+        </button>
+        <button id="btnOpenEvalModal" class="btn-secondary" title="Run batch evaluation on real dataset notes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          Batch Evaluation
+        </button>
+        <button id="btnOpenDatasetModal" class="btn-secondary" title="View dataset metadata, DOI and CC BY 4.0 license">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          Dataset Info
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    <!-- Left Sidebar: Controls & Input -->
+    <aside class="sidebar-panel">
+      <!-- Problem Statement Card -->
+      <section class="card problem-card">
+        <h3 class="card-title">Problem Statement</h3>
+        <p class="problem-text">
+          Detect torn or damaged currency note edges, calculate visible edge damage percentage, and classify notes into <strong>Good</strong>, <strong>Folded</strong>, <strong>Torn</strong>, <strong>Old/Worn</strong>, or <strong>Needs Manual Inspection</strong>.
+        </p>
+      </section>
+
+      <!-- Input Selection Card -->
+      <section class="card input-card">
+        <h3 class="card-title">1. Input Currency Note</h3>
+
+        <!-- Primary Option: Selected Dataset Note -->
+        <div class="form-group">
+          <label class="form-label">Real Mendeley Dataset (2,000 Notes):</label>
+          <div id="datasetSelectedBox" class="dataset-select-box">
+            <div id="datasetSelectPlaceholder" class="dataset-placeholder-text">
+              <span id="lblSelectedDatasetText">No dataset note selected yet.</span>
+              <button id="btnLaunchBrowserSidebar" type="button" class="btn-sm-primary">Browse 2,000 Notes</button>
+            </div>
+            <div id="datasetSelectedPreview" class="dataset-selected-preview hidden">
+              <img id="imgSelectedDatasetThumb" src="/static/placeholder.svg" alt="Selected dataset thumbnail" class="dataset-thumb-preview">
+              <div class="dataset-preview-info">
+                <span id="lblDatasetPreviewName" class="preview-filename">10_new_1.jpg</span>
+                <span id="lblDatasetPreviewCat" class="preview-category">New 10 Rupees (#1)</span>
+                <span id="lblDatasetPreviewDim" class="preview-dim">1280 &times; 768</span>
+              </div>
+              <button id="btnClearDatasetSelection" class="btn-icon" title="Clear selection">&times;</button>
+            </div>
+          </div>
+          <span class="field-hint">Select any of the 2,000 unique real Indian rupee notes.</span>
+        </div>
+
+        <div class="divider"><span>OR UPLOAD</span></div>
+
+        <!-- File Upload Area -->
+        <div class="form-group">
+          <label class="form-label">Upload Note Photograph:</label>
+          <div id="dropZone" class="drop-zone">
+            <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.bmp,.tif,.tiff" class="file-input">
+            <div class="drop-zone-content">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <p class="drop-text">Drag &amp; drop note image here</p>
+              <p class="drop-subtext">or click to browse</p>
+            </div>
+            <div id="fileSelectedBadge" class="file-badge hidden">
+              <span id="selectedFileName">filename.png</span>
+              <button id="btnClearFile" class="btn-icon" title="Clear file">&times;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"><span>OR BENCHMARK</span></div>
+
+        <!-- Sample Selector Dropdown -->
+        <div class="form-group">
+          <label for="sampleSelect" class="form-label">Synthetic Test Benchmarks:</label>
+          <div class="select-wrapper">
+            <select id="sampleSelect" class="form-select">
+              <option value="" selected>Select a synthetic test note...</option>
+            </select>
+          </div>
+          <span class="field-hint">Controlled geometric benchmarks for unit validation.</span>
+        </div>
+
+        <!-- Primary Action Buttons -->
+        <div class="action-buttons">
+          <button id="btnAnalyze" class="btn-primary" disabled>
+            <svg class="btn-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+            <span id="btnAnalyzeText">Analyze Note Edges</span>
+          </button>
+          <button id="btnReset" class="btn-secondary">Reset</button>
+        </div>
+      </section>
+
+      <!-- View Controls Card -->
+      <section class="card view-card">
+        <h3 class="card-title">View Options &amp; Downloads</h3>
+        <div class="toggle-group">
+          <label class="switch-label">
+            <input type="checkbox" id="toggleOverlayCheckbox" checked>
+            <span class="switch-slider"></span>
+            <span class="switch-text">Vivid Red Damage Highlight</span>
+          </label>
+        </div>
+        <div class="export-actions">
+          <button id="btnExportOverlay" class="btn-outline" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download Overlay
+          </button>
+          <button id="btnExportReport" class="btn-outline" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            Export JSON
+          </button>
+        </div>
+      </section>
+    </aside>
+
+    <!-- Center & Right: Dashboard Work Area -->
+    <div class="workspace-area">
+      <!-- System Notification Banner -->
+      <div id="systemBanner" class="system-banner hidden">
+        <div class="banner-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div id="systemBannerText" class="banner-text">System notice text</div>
+        <button id="btnCloseBanner" class="btn-icon">&times;</button>
+      </div>
+
+      <!-- Top Metric Cards Grid -->
+      <div class="metrics-grid">
+        <!-- Classification Card -->
+        <div class="metric-card card-classification">
+          <div class="metric-header">
+            <span class="metric-label">Note Condition</span>
+            <span class="metric-chip">Classification</span>
+          </div>
+          <div class="metric-value-wrapper">
+            <div id="badgeClassification" class="classification-badge pending">NOT ANALYZED</div>
+          </div>
+          <p id="classificationReason" class="metric-footer-text">Awaiting input note for edge analysis</p>
+        </div>
+
+        <!-- Edge Damage Percentage Card -->
+        <div class="metric-card card-damage">
+          <div class="metric-header">
+            <span class="metric-label">Edge Damage Metric</span>
+            <span class="metric-chip">Perimeter %</span>
+          </div>
+          <div class="metric-value-wrapper">
+            <span id="metricDamagePct" class="damage-number">--</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="damageProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+          <p class="metric-footer-text">
+            Damaged: <strong id="lblDamagedPx">0.0 px</strong> / Perimeter: <strong id="lblTotalPerimPx">0.0 px</strong>
+          </p>
+        </div>
+
+        <!-- Boundary Quality Confidence -->
+        <div class="metric-card card-confidence">
+          <div class="metric-header">
+            <span class="metric-label">Boundary Quality</span>
+            <span class="metric-chip">Confidence</span>
+          </div>
+          <div class="metric-value-wrapper">
+            <span id="metricConfidence" class="confidence-number">--</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="confidenceProgressBar" class="progress-bar-fill confidence-fill" style="width: 0%;"></div>
+          </div>
+          <p id="lblSolidityAspect" class="metric-footer-text">Solidity: -- &bull; Aspect Ratio: --</p>
+        </div>
+
+        <!-- Processing Time -->
+        <div class="metric-card card-time">
+          <div class="metric-header">
+            <span class="metric-label">Pipeline Runtime</span>
+            <span class="metric-chip">Python DIP</span>
+          </div>
+          <div class="metric-value-wrapper">
+            <span id="metricExecTime" class="time-number">--</span>
+          </div>
+          <p class="metric-footer-text">
+            Engine: <strong id="lblEngineMode">Python 3 (NumPy + scikit-image)</strong>
+          </p>
+        </div>
+      </div>
+
+      <!-- Multi-View Image Inspection Canvas -->
+      <section class="card canvas-card">
+        <div class="canvas-header">
+          <h3 class="card-title">Multi-View Inspection Panels</h3>
+          <div class="canvas-tabs">
+            <button class="tab-btn active" data-tab="quad">Quad View (2x2)</button>
+            <button class="tab-btn" data-tab="overlay">Damage Overlay</button>
+            <button class="tab-btn" data-tab="boundary">Boundary &amp; Corners</button>
+            <button class="tab-btn" data-tab="grayscale">Preprocessed Grayscale</button>
+            <button class="tab-btn" data-tab="original">Original Image</button>
+          </div>
+        </div>
+
+        <!-- Quad View Grid Container -->
+        <div id="quadViewContainer" class="quad-grid-wrapper">
+          <!-- Viewport 1: Original -->
+          <div class="viewport-box">
+            <div class="viewport-banner">1. Original Note Image</div>
+            <div class="viewport-stage">
+              <img id="imgOriginal" src="/static/placeholder.svg" alt="Original currency note" class="viewport-img">
+              <div id="loaderOriginal" class="viewport-spinner hidden"></div>
+            </div>
+          </div>
+          <!-- Viewport 2: Preprocessed -->
+          <div class="viewport-box">
+            <div class="viewport-banner">2. Preprocessed Grayscale (Gaussian &amp; Contrast)</div>
+            <div class="viewport-stage">
+              <img id="imgGrayscale" src="/static/placeholder.svg" alt="Preprocessed grayscale" class="viewport-img">
+              <div id="loaderGrayscale" class="viewport-spinner hidden"></div>
+            </div>
+          </div>
+          <!-- Viewport 3: Boundary -->
+          <div class="viewport-box">
+            <div class="viewport-banner">3. Boundary Contour &amp; 4 Corners</div>
+            <div class="viewport-stage">
+              <img id="imgBoundary" src="/static/placeholder.svg" alt="Detected boundary" class="viewport-img">
+              <div id="loaderBoundary" class="viewport-spinner hidden"></div>
+            </div>
+          </div>
+          <!-- Viewport 4: Red Damage Overlay -->
+          <div class="viewport-box">
+            <div class="viewport-banner highlight">4. Vivid Red Damage Highlight</div>
+            <div class="viewport-stage">
+              <img id="imgOverlay" src="/static/placeholder.svg" alt="Red damage overlay" class="viewport-img">
+              <div id="loaderOverlay" class="viewport-spinner hidden"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Viewport Container (for individual tabs) -->
+        <div id="singleViewContainer" class="single-viewport-wrapper hidden">
+          <div class="viewport-stage single">
+            <img id="imgSingleView" src="/static/placeholder.svg" alt="Selected single view" class="viewport-img single">
+          </div>
+        </div>
+      </section>
+
+      <!-- Granular 4-Edge Inspection Table -->
+      <section class="card table-card">
+        <div class="table-header">
+          <h3 class="card-title">Granular 4-Border Inspection Breakdown</h3>
+          <span class="table-subtitle">Independent analysis for Top, Right, Bottom, and Left borders</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="edge-table">
+            <thead>
+              <tr>
+                <th>Border Edge</th>
+                <th>Edge Status</th>
+                <th>Damaged Length</th>
+                <th>Max Tear Depth</th>
+                <th>Defects Detected</th>
+                <th>Evaluation</th>
+              </tr>
+            </thead>
+            <tbody id="edgeTableBody">
+              <tr>
+                <td><strong>Top Edge</strong></td>
+                <td><span class="status-pill gray">--</span></td>
+                <td>0.0 px</td>
+                <td>0.0 px</td>
+                <td>0</td>
+                <td>Awaiting analysis</td>
+              </tr>
+              <tr>
+                <td><strong>Right Edge</strong></td>
+                <td><span class="status-pill gray">--</span></td>
+                <td>0.0 px</td>
+                <td>0.0 px</td>
+                <td>0</td>
+                <td>Awaiting analysis</td>
+              </tr>
+              <tr>
+                <td><strong>Bottom Edge</strong></td>
+                <td><span class="status-pill gray">--</span></td>
+                <td>0.0 px</td>
+                <td>0.0 px</td>
+                <td>0</td>
+                <td>Awaiting analysis</td>
+              </tr>
+              <tr>
+                <td><strong>Left Edge</strong></td>
+                <td><span class="status-pill gray">--</span></td>
+                <td>0.0 px</td>
+                <td>0.0 px</td>
+                <td>0</td>
+                <td>Awaiting analysis</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="academic-disclaimer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span><strong>Academic Disclaimer:</strong> Edge damage percentage is an algorithmic estimate based on 2D digital image processing of perimeter pixels. This application does NOT authenticate legal tender or detect counterfeiting.</span>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- MODAL 1: 2,000-Image Dataset Browser -->
+  <div id="browserModal" class="modal-backdrop hidden">
+    <div class="modal-card modal-xl">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <h3 class="modal-title">Dataset Browser — 2,000 Real Indian Banknotes</h3>
+          <span class="modal-subtitle">Dataset of Spoilt Banknotes of India (Rupees) &bull; CC BY 4.0</span>
+        </div>
+        <button id="btnCloseBrowserModal" class="btn-icon">&times;</button>
+      </div>
+
+      <!-- Browser Filter Bar -->
+      <div class="browser-controls-bar">
+        <div class="search-box-wrapper">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="browserSearchInput" placeholder="Search by filename or denomination (e.g. 10_new, 50_old)..." class="search-input">
+        </div>
+        <div class="category-select-wrapper">
+          <label for="browserCategoryFilter">Category:</label>
+          <select id="browserCategoryFilter" class="form-select-sm">
+            <option value="All">All Categories (2,000)</option>
+          </select>
+        </div>
+        <div class="browser-stats-tag">
+          Showing <span id="lblBrowserCurrentCount">0</span> of <span id="lblBrowserTotalCount">2,000</span>
+        </div>
+      </div>
+
+      <!-- Thumbnail Grid Gallery -->
+      <div class="modal-body-scrollable">
+        <div id="datasetGalleryGrid" class="dataset-gallery-grid">
+          <!-- Dynamically populated thumbnail cards -->
+        </div>
+        <div id="browserLoadingSpinner" class="gallery-spinner hidden">
+          <div class="spinner"></div>
+          <span>Loading dataset images...</span>
+        </div>
+      </div>
+
+      <!-- Pagination Bar -->
+      <div class="browser-pagination-bar">
+        <div class="pagination-info">
+          Page <strong id="lblCurrentPage">1</strong> of <strong id="lblTotalPages">84</strong>
+        </div>
+        <div class="pagination-buttons">
+          <button id="btnPrevPage" class="btn-sm-secondary" disabled>&larr; Previous</button>
+          <span id="paginationPageNumbers" class="pagination-numbers"></span>
+          <button id="btnNextPage" class="btn-sm-secondary">Next &rarr;</button>
+        </div>
+        <button id="btnCloseBrowserFooter" class="btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Batch Dataset Evaluation -->
+  <div id="evalModal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Dataset Batch Evaluation</h3>
+          <span class="modal-subtitle">Process a representative subset of real notes with CSV summary export</span>
+        </div>
+        <button id="btnCloseEvalModal" class="btn-icon">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Configuration Controls -->
+        <div class="eval-config-box">
+          <div class="form-group-inline">
+            <label for="evalCountSelect">Evaluation Batch Size:</label>
+            <select id="evalCountSelect" class="form-select-sm">
+              <option value="10" selected>10 Banknotes (Fast Smoke Test)</option>
+              <option value="25">25 Banknotes (Standard Evaluation)</option>
+              <option value="50">50 Banknotes (Comprehensive)</option>
+              <option value="100">100 Banknotes (Deep Batch Run)</option>
+            </select>
+          </div>
+          <div class="form-group-inline">
+            <label for="evalCategorySelect">Category Filter:</label>
+            <select id="evalCategorySelect" class="form-select-sm">
+              <option value="All">All 8 Denominations/Series</option>
+            </select>
+          </div>
+          <button id="btnRunEvaluation" class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Run Evaluation
+          </button>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div id="evalProgressBox" class="eval-progress-box hidden">
+          <div class="progress-bar-bg">
+            <div id="evalProgressBar" class="progress-bar-fill progress-animated" style="width: 100%;"></div>
+          </div>
+          <p id="evalProgressText" class="eval-progress-text">Processing evaluation batch through Python DIP pipeline...</p>
+        </div>
+
+        <!-- Evaluation Results Summary -->
+        <div id="evalResultsSummary" class="eval-results-box hidden">
+          <h4 class="section-title">Evaluation Summary:</h4>
+          <div class="dataset-stats-grid">
+            <div class="stat-box">
+              <span class="stat-num" id="statEvalTotal">0</span>
+              <span class="stat-label">Notes Processed</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num text-success" id="statEvalSuccess">0</span>
+              <span class="stat-label">Successful Boundaries</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="statEvalAvgDamage">0.0%</span>
+              <span class="stat-label">Avg Edge Damage</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="statEvalAvgTime">0.0s</span>
+              <span class="stat-label">Avg Runtime</span>
+            </div>
+          </div>
+
+          <h4 class="section-title">Predicted Condition Distribution:</h4>
+          <div id="evalClassDistribution" class="class-dist-pills"></div>
+
+          <div class="eval-csv-action">
+            <a id="btnDownloadEvalCsv" href="#" download class="btn-sm-primary" target="_blank">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Evaluation CSV Summary
+            </a>
+          </div>
+
+          <!-- Table of evaluated notes -->
+          <h4 class="section-title">Evaluated Notes Detail:</h4>
+          <div class="eval-table-wrapper">
+            <table class="edge-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Filename</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Predicted Class</th>
+                  <th>Damage %</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="evalTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCloseEvalFooter" class="btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Dataset Attribution & Metadata -->
+  <div id="datasetModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Dataset Attribution &amp; Integrity</h3>
+        <button id="btnCloseDatasetModal" class="btn-icon">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="modalBenchmarkBanner" class="benchmark-banner ready">
+          <div class="banner-title" id="benchmarkTitle">2,000 Real Indian Banknotes Integrated</div>
+          <div class="banner-sub" id="benchmarkSub">Mendeley Data &bull; CC BY 4.0 International License</div>
+        </div>
+        <div class="dataset-stats-grid">
+          <div class="stat-box">
+            <span class="stat-num" id="statRealCount">2,000</span>
+            <span class="stat-label">Selected Real Notes</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="statCategoryCount">8</span>
+            <span class="stat-label">Denominations</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="statTargetCount">2,000</span>
+            <span class="stat-label">Manifest Target</span>
+          </div>
+        </div>
+
+        <h4 class="section-title">Dataset Citation &amp; License:</h4>
+        <div class="attribution-card">
+          <p><strong>Dataset Title:</strong> Dataset of Spoilt Banknotes of India (Rupees)</p>
+          <p><strong>Repository:</strong> Mendeley Data, Version 4</p>
+          <p><strong>DOI:</strong> <a href="https://doi.org/10.17632/jh6979fg2t.4" target="_blank" rel="noopener">10.17632/jh6979fg2t.4</a></p>
+          <p><strong>URL:</strong> <a href="https://data.mendeley.com/datasets/jh6979fg2t/4" target="_blank" rel="noopener">https://data.mendeley.com/datasets/jh6979fg2t/4</a></p>
+          <p><strong>License:</strong> Creative Commons Attribution 4.0 International (CC BY 4.0)</p>
+        </div>
+
+        <h4 class="section-title">2,000-Image Selection Composition (250 per class):</h4>
+        <div id="datasetCategoryList" class="category-list"></div>
+
+        <div class="modal-protocol-box">
+          <p><strong>Deterministic Deduplication:</strong> All 5,125 source images were verified for readability with Pillow and SHA-256 hashed. 56 exact duplicates and 0 corrupt files were excluded, yielding 5,069 valid images. Exactly 2,000 images (250 per category) were deterministically selected and indexed in <code>dataset/selected_2000_manifest.csv</code>.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCloseModalFooter" class="btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

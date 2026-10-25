@@ -1,0 +1,7 @@
+Filename,Class,Source,LicenseOrPermission,Dimensions,Notes
+synthetic_good_01.png,good,Synthetic Algorithmic Generator,Educational / Open Benchmark,800x500,Synthetic intact rectangular note with internal security graphics
+synthetic_torn_corner_02.png,torn,Synthetic Algorithmic Generator,Educational / Open Benchmark,800x500,Synthetic note with missing top-right corner triangular notch
+synthetic_torn_edge_03.png,torn,Synthetic Algorithmic Generator,Educational / Open Benchmark,800x500,Synthetic note with irregular top edge tear gouge
+synthetic_folded_04.png,folded,Synthetic Algorithmic Generator,Educational / Open Benchmark,800x500,Synthetic note with central transverse vertical fold crease
+synthetic_worn_05.png,old_worn,Synthetic Algorithmic Generator,Educational / Open Benchmark,800x500,Synthetic note with ragged frayed borders and surface texture aging
+synthetic_uniform_06.png,failure_mode_blank,Synthetic Algorithmic Generator,Educational / Open Benchmark,800x500,Blank uniform canvas for boundary failure verification

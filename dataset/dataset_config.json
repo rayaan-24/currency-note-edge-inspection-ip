@@ -1,0 +1,9 @@
+{
+  "dataset_name": "Dataset of Spoilt Banknotes of India (Rupees)",
+  "dataset_root": "dataset",
+  "dataset_source_url": "https://data.mendeley.com/datasets/jh6979fg2t/4",
+  "dataset_version": 4,
+  "target_selection_count": 2000,
+  "manifest_path": "dataset/selected_2000_manifest.csv",
+  "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+}
